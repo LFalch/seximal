@@ -26,18 +26,18 @@ impl Display for Digit {
 }
 
 impl Digit {
-    pub fn from_char(c: char) -> Self {
-        match c {
+    pub fn from_char(c: char) -> Option<Self> {
+        Some(match c {
             '0' => Zero,
             '1' => One,
             '2' => Two,
             '3' => Three,
             '4' => Four,
             '5' => Five,
-            _ => panic!("Invalid digit `{}'", c)
-        }
+            _ => return None
+        })
     }
-    pub fn from_usize(n: usize) -> Self {
+    fn from_usize(n: usize) -> Self {
         match n {
             0 => Zero,
             1 => One,
@@ -60,20 +60,20 @@ impl Digit {
     }
 }
 
-fn number_from_str(s: &str) -> Vec<(Digit, Digit)> {
+fn number_from_str(s: &str) -> Option<Vec<(Digit, Digit)>> {
     let even = s.len() & 1 == 0;
     let mut iter = s.chars().map(|c| Digit::from_char(c));
     let mut number = Vec::with_capacity(s.len() / 2 + if even{0}else{1});
 
     if !even {
-        number.push((Zero, iter.next().unwrap()));
+        number.push((Zero, iter.next().unwrap()?));
     }
 
     while let (Some(d1), Some(d2)) = (iter.next(), iter.next()) {
-        number.push((d1, d2))
+        number.push((d1?, d2?))
     }
 
-    number
+    Some(number)
 }
 
 fn convert_pair(buf: &mut String, d1: Digit, d2: Digit) -> fmt::Result {
@@ -118,7 +118,7 @@ fn convert_pair(buf: &mut String, d1: Digit, d2: Digit) -> fmt::Result {
 }
 
 pub fn to_seximal_words(s: &str) -> Result<String, Error> {
-    let number = number_from_str(s);
+    let number = number_from_str(s).ok_or(Error)?;
 
     let mut number_string = String::with_capacity(4*s.len());
 
