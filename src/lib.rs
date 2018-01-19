@@ -62,7 +62,7 @@ impl Digit {
 
 fn number_from_str(s: &str) -> Vec<(Digit, Digit)> {
     let even = s.len() & 1 == 0;
-    let mut iter = s.chars().map(|c| Digit::from_char(c));
+    let mut iter = s.chars().filter(|&c| !c.is_whitespace()).map(|c| Digit::from_char(c));
     let mut number = Vec::with_capacity(s.len() / 2 + if even{0}else{1});
 
     if !even {
