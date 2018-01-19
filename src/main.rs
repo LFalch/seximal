@@ -111,13 +111,13 @@ fn convert_pair(d1: Digit, d2: Digit) {
         Four => {
             print!("foursy ");
             if d2 != Zero {
-                print!("{}", d2);
+                print!("{} ", d2);
             }
         }
         Five => {
             print!("fifsy ");
             if d2 != Zero {
-                print!("{}", d2);
+                print!("{} ", d2);
             }
         }
     }
@@ -135,6 +135,8 @@ fn convert_stdin() {
         return println!();
     }
 
+    let mut do_exian = false;
+
     for (i, (d1, d2)) in number.into_iter().rev().enumerate().rev() {
         match i {
             0 => if (d1, d2) != (Zero, Zero) {
@@ -143,17 +145,20 @@ fn convert_stdin() {
             // uneven numbers
             n if n & 1 == 1 => {
                 if (d1, d2) == (Zero, Zero) {
+                    do_exian = false;
                     continue
                 }
+                do_exian = true;
                 convert_pair(d1, d2);
                 print!("nif ");
             }
             // even numbers above 2 (-exian)
             n => {
-                if (d1, d2) == (Zero, Zero) {
+                if (d1, d2) != (Zero, Zero) {
+                    convert_pair(d1, d2);
+                } else if !do_exian {
                     continue
                 }
-                convert_pair(d1, d2);
                 let prefix = simple_num(n / 2);
                 for (i, &d) in prefix.iter().enumerate() {
                     match d {
@@ -166,7 +171,7 @@ fn convert_stdin() {
                         Three => print!("tri"),
                         Four => print!("{}", match prefix.get(i+1) {
                             Some(&Two) | Some(&Three) | Some(&Four) | Some(&Five) => "quada",
-                            None | Some(&Zero) | Some(&One)  => "quand",
+                            None | Some(&Zero) | Some(&One)  => "quad",
                         }),
                         Five => print!("{}", match prefix.get(i+1) {
                             Some(&Two) | Some(&Three) | Some(&Four) | Some(&Five) => "penta",
