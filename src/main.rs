@@ -6,7 +6,8 @@ fn main() {
     let mut s = String::new();
     loop {
         stdin().read_line(&mut s).unwrap();
-        println!("{}", seximal::to_seximal_words(s.trim()).unwrap());
+        let n = s.replace(<char>::is_whitespace, "");
+        println!("{}", seximal::to_seximal_words(n.trim()).unwrap());
         s.clear();
     }
 }
