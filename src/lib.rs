@@ -152,23 +152,29 @@ pub fn to_seximal_words(s: &str) -> Result<String, Error> {
                 } else if !do_exian {
                     continue
                 }
-                let prefix = simple_num(n / 2);
-                for (i, &d) in prefix.iter().enumerate() {
+                let mut prefix = SeximalDigits::new(n / 2);
+                loop {
+                    let d;
+                    if let Some(digit) = prefix.next() {
+                        d = digit;
+                    } else {
+                        break
+                    }
                     match d {
                         Zero => number_string.push_str("nil"),
-                        One => number_string.push_str(match prefix.get(i+1) {
-                            None | Some(&One) | Some(&Three) | Some(&Four) | Some(&Zero) => "un",
-                            Some(&Two) | Some(&Five) => "um",
+                        One => number_string.push_str(match prefix.peek() {
+                            None | Some(One) | Some(Three) | Some(Four) | Some(Zero) => "un",
+                            Some(Two) | Some(Five) => "um",
                         }),
                         Two => number_string.push_str("bi"),
                         Three => number_string.push_str("tri"),
-                        Four => number_string.push_str(match prefix.get(i+1) {
-                            Some(&Two) | Some(&Three) | Some(&Four) | Some(&Five) => "quada",
-                            None | Some(&Zero) | Some(&One)  => "quad",
+                        Four => number_string.push_str(match prefix.peek() {
+                            Some(Two) | Some(Three) | Some(Four) | Some(Five) => "quada",
+                            None | Some(Zero) | Some(One)  => "quad",
                         }),
-                        Five => number_string.push_str(match prefix.get(i+1) {
-                            Some(&Two) | Some(&Three) | Some(&Four) | Some(&Five) => "penta",
-                            None | Some(&Zero) | Some(&One) => "pent",
+                        Five => number_string.push_str(match prefix.peek() {
+                            Some(Two) | Some(Three) | Some(Four) | Some(Five) => "penta",
+                            None | Some(Zero) | Some(One) => "pent",
                         }),
                     }
                 }
@@ -179,21 +185,41 @@ pub fn to_seximal_words(s: &str) -> Result<String, Error> {
     Ok(number_string)
 }
 
-fn simple_num(mut n: usize) -> Vec<Digit> {
-    let mut num = Vec::new();
-    let mut base = 6;
+struct SeximalDigits {
+    base: usize,
+    n: usize,
+}
 
-    loop {
-        let digit = n % base;
-        num.push(Digit::from_usize(digit));
+impl SeximalDigits {
+    fn new(n: usize) -> Self {
+        let mut base = 6;
 
-        n /= 6;
-        if n == 0 {
-            break
+        while base * 6 <= n {
+            base *= 6;
         }
-        base *= 6;
-    }
 
-    num.reverse();
-    num
+        SeximalDigits {
+            base,
+            n
+        }
+    }
+    fn peek(&self) -> Option<Digit> {
+        self.n.checked_div(self.base).map(Digit::from_usize)
+    }
+}
+
+impl Iterator for SeximalDigits {
+    type Item = Digit;
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.base >= 1 {
+            let digit = self.n / self.base;
+
+            self.n %= self.base;
+            self.base /= 6;
+
+            Some(Digit::from_usize(digit))
+        } else {
+            None
+        }
+    }
 }
