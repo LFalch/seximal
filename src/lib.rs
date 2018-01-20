@@ -192,7 +192,8 @@ struct SeximalDigits {
 
 impl SeximalDigits {
     fn new(n: usize) -> Self {
-        let mut base = 6;
+        // let base = 6usize.pow((n as f32).log(6.) as u32);
+        let mut base = 1;
 
         while base * 6 <= n {
             base *= 6;
