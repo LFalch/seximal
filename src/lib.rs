@@ -73,6 +73,11 @@ fn number_from_str(s: &str) -> Option<Vec<(Digit, Digit)>> {
         number.push((d1?, d2?))
     }
 
+    // Remove leading zeroes
+    while number.len() > 1 && number.first() == Some(&(Zero, Zero)) {
+        number.remove(0);
+    }
+
     Some(number)
 }
 
@@ -132,6 +137,11 @@ pub fn to_seximal_words(mut s: &str) -> Result<String, Error> {
     number_string.push_str(prefix);
 
     let digit_pair_amount = number.len();
+
+    if digit_pair_amount == 0 {
+        return Err(Error)
+    }
+
     let last_par_i = digit_pair_amount - 1;
 
     if digit_pair_amount == 1 {
