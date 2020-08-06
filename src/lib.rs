@@ -10,7 +10,7 @@ pub enum Digit {
     Five,
 }
 
-use Digit::*;
+use crate::Digit::*;
 
 impl Display for Digit {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -117,10 +117,22 @@ fn convert_pair(buf: &mut String, d1: Digit, d2: Digit) -> fmt::Result {
     Ok(())
 }
 
-pub fn to_seximal_words(s: &str) -> Result<String, Error> {
+pub fn to_seximal_words(mut s: &str) -> Result<String, Error> {
+    let prefix = if s.starts_with("-") {
+        s = &s[1..];
+        "negative "
+    } else {
+        if s.starts_with("+") {
+            s = &s[1..];
+        }
+        ""
+    };
+
     let number = number_from_str(s).ok_or(Error)?;
 
-    let mut number_string = String::with_capacity(4*s.len());
+    let mut number_string = String::with_capacity(4*s.len() + prefix.len());
+
+    number_string.push_str(prefix);
 
     if number.len() == 1 {
         let (d1, d2) = number[0];
