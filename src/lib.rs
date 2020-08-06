@@ -90,10 +90,7 @@ fn convert_pair(buf: &mut String, d1: Digit, d2: Digit) -> fmt::Result {
         Two => if d2 == Zero {
             buf.push_str("twelve ")
         } else {
-            buf.push_str("dozen ");
-            if d2 != Zero {
-                write!(buf, "{} ", d2)?;
-            }
+            write!(buf, "dozen {} ", d2)?;
         }
         Three => {
             buf.push_str("thirsy ");
