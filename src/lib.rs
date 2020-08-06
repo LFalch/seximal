@@ -131,7 +131,10 @@ pub fn to_seximal_words(mut s: &str) -> Result<String, Error> {
 
     number_string.push_str(prefix);
 
-    if number.len() == 1 {
+    let digit_pair_amount = number.len();
+    let last_par_i = digit_pair_amount - 1;
+
+    if digit_pair_amount == 1 {
         let (d1, d2) = number[0];
         convert_pair(&mut number_string, d1, d2)?;
         return Ok(number_string);
@@ -151,7 +154,11 @@ pub fn to_seximal_words(mut s: &str) -> Result<String, Error> {
                     continue
                 }
                 do_exian = true;
-                convert_pair(&mut number_string, d1, d2)?;
+                // Don't write "one" in front of nif, if it's the first digit
+                if !(last_par_i == n && (d1, d2) == (Zero, One)) {
+                    convert_pair(&mut number_string, d1, d2)?;
+                }
+
                 number_string.push_str("nif ");
             }
             // even numbers above 2 (-exian)
