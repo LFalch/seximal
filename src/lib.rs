@@ -1,13 +1,14 @@
 use std::fmt::{self, Display, Write, Error};
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
+#[repr(u8)]
 pub enum Digit {
-    Zero,
-    One,
-    Two,
-    Three,
-    Four,
-    Five,
+    Zero = 0,
+    One = 1,
+    Two = 2,
+    Three = 3,
+    Four = 4,
+    Five = 5,
 }
 
 use crate::Digit::*;
@@ -46,16 +47,6 @@ impl Digit {
             4 => Four,
             5 => Five,
             _ => panic!("Invalid digit `{}'", n)
-        }
-    }
-    pub fn to_num(&self) -> u8 {
-        match *self {
-            Zero => 0,
-            One => 1,
-            Two => 2,
-            Three => 3,
-            Four => 4,
-            Five => 5,
         }
     }
 }
