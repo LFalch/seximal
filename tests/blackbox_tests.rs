@@ -109,5 +109,5 @@ fn nonsense_strings() {
     test_bad("");
     test_bad("æå");
     test_bad("five");
-    test_bad("џіз стрің із нөт э нымбэ");
+    test_bad("ҙіз стрің із нөт э нымбэ");
 }
