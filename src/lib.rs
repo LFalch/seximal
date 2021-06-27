@@ -1,5 +1,7 @@
 use std::fmt::{self, Display, Write, Error};
 
+pub mod decimal;
+
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 #[repr(u8)]
 pub enum Digit {
