@@ -177,23 +177,23 @@ pub fn to_seximal_words(mut s: &str) -> Result<String, Error> {
                     } else {
                         break
                     }
-                    match d {
-                        Zero => number_string.push_str("nil"),
-                        One => number_string.push_str(match prefix.peek() {
+                    number_string.push_str(match d {
+                        Zero => "nil",
+                        One => match prefix.peek() {
                             None | Some(One) | Some(Three) | Some(Four) | Some(Zero) => "un",
                             Some(Two) | Some(Five) => "um",
-                        }),
-                        Two => number_string.push_str("bi"),
-                        Three => number_string.push_str("tri"),
-                        Four => number_string.push_str(match prefix.peek() {
+                        },
+                        Two => "bi",
+                        Three => "tri",
+                        Four => match prefix.peek() {
                             Some(Two) | Some(Three) | Some(Four) | Some(Five) => "quada",
                             None | Some(Zero) | Some(One)  => "quad",
-                        }),
-                        Five => number_string.push_str(match prefix.peek() {
+                        },
+                        Five => match prefix.peek() {
                             Some(Two) | Some(Three) | Some(Four) | Some(Five) => "penta",
                             None | Some(Zero) | Some(One) => "pent",
-                        }),
-                    }
+                        },
+                    })
                 }
                 number_string.push_str("exian ");
             }
